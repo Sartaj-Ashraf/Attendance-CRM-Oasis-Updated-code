@@ -4,7 +4,6 @@ import api from "../axios/axios.js";
 import { AuthContext } from "../ContextApi/isAuth.jsx";
 import { toast } from "sonner";
 import { Eye, EyeOff, CheckCircle, Loader2 } from "lucide-react";
-import Ballpit from "../animation/Ballpit.jsx";
 import { motion, AnimatePresence } from "framer-motion";
 import { FlipWordsDemo } from "../components/welcome.jsx";
 
@@ -70,11 +69,9 @@ const Login = () => {
     if (e.key === "Enter") submitDetails();
   };
 
-  const hour = new Date().getHours();
-  const isNight = hour >= 19 || hour <= 6;
-
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden px-4">
+
       <AnimatePresence>
         {showWelcome && userRole && (
           <motion.div
@@ -90,146 +87,92 @@ const Login = () => {
       </AnimatePresence>
 
       {!showWelcome && (
-        <>
-          {/* Background */}
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            <Ballpit
-              count={isNight ? 120 : 140}
-              gravity={isNight ? 0.35 : 0.6}
-              friction={isNight ? 0.95 : 0.85}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl"
+        >
+          <h2 className="text-2xl font-semibold text-white text-center mb-2">
+            Welcome Back
+          </h2>
+
+          <p className="text-sm text-gray-300 text-center mb-6">
+            Attendance & Workforce System
+          </p>
+
+          {/* Email */}
+          <input
+            className="w-full mb-4 px-4 py-3 text-sm rounded-lg bg-white/20 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Email"
+            name="email"
+            value={formdata.email}
+            onChange={changeHandler}
+            onKeyDown={handleKeyDown}
+            disabled={loading}
+          />
+
+          {/* Password */}
+          <div className="relative mb-4">
+            <input
+              className="w-full px-4 py-3 pr-12 text-sm rounded-lg bg-white/20 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Password"
+              type={showEye ? "text" : "password"}
+              name="password"
+              value={formdata.password}
+              onChange={changeHandler}
+              onKeyDown={handleKeyDown}
+              disabled={loading}
             />
-            <div className="absolute inset-0 bg-black/20" />
-            <div className="absolute inset-0 backdrop-blur-[2px]" />
-          </div>
 
-          {/* Centered container */}
-          <div className="relative z-20 min-h-screen flex items-center justify-center px-4">
-            <div
-              className="
-                w-full
-                max-w-xs sm:max-w-sm            /* ✅ smaller card width */
-                bg-white rounded-xl             /* ✅ softer radius */
-                p-4 sm:p-5                      /* ✅ reduced padding */
-                shadow-lg
-              "
+            <button
+              type="button"
+              onClick={() => setShowEye(!showEye)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300"
             >
-              <h2
-                className="
-                  text-xl sm:text-2xl           /* ✅ smaller heading */
-                  font-semibold
-                  text-center
-                  mb-1
-                "
-              >
-                Welcome Back
-              </h2>
-
-              <p
-                className="
-                  text-[11px] sm:text-xs        /* ✅ compact subtitle */
-                  text-center
-                  text-gray-500
-                  mb-4
-                "
-              >
-                Attendance & Workforce System
-              </p>
-
-              <input
-                className="
-                  w-full
-                  mb-3
-                  px-3 py-2.5                   /* ✅ compact input */
-                  text-sm
-                  border rounded-md
-                  focus:outline-none focus:ring-2 focus:ring-indigo-500
-                "
-                placeholder="Email"
-                name="email"
-                value={formdata.email}
-                onChange={changeHandler}
-                onKeyDown={handleKeyDown}
-                disabled={loading}
-              />
-
-              <div className="relative mb-3">
-                <input
-                  className="
-                    w-full
-                    px-3 py-2.5
-                    pr-10
-                    text-sm
-                    border rounded-md
-                    focus:outline-none focus:ring-2 focus:ring-indigo-500
-                  "
-                  placeholder="Password"
-                  type={showEye ? "text" : "password"}
-                  name="password"
-                  value={formdata.password}
-                  onChange={changeHandler}
-                  onKeyDown={handleKeyDown}
-                  disabled={loading}
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowEye(!showEye)}
-                  className="
-                    absolute right-2 top-1/2 -translate-y-1/2
-                    p-1.5                        /* ✅ compact icon hitbox */
-                    text-gray-500
-                  "
-                >
-                  {showEye ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-
-              <motion.button
-                onClick={submitDetails}
-                disabled={loading}
-                whileHover={!loading ? { scale: 1.03 } : {}}
-                whileTap={!loading ? { scale: 0.96 } : {}}
-                className="
-                  w-full
-                  py-2.5                         /* ✅ slimmer button */
-                  rounded-lg
-                  text-sm
-                  font-medium
-                  text-white
-                  bg-gradient-to-r from-indigo-600 to-violet-600
-                  flex items-center justify-center gap-2
-                  disabled:opacity-70
-                "
-              >
-                <AnimatePresence mode="wait">
-                  {loading && (
-                    <motion.span
-                      key="loading"
-                      className="flex items-center gap-2"
-                    >
-                      <Loader2 className="animate-spin" size={16} />
-                      Signing in
-                    </motion.span>
-                  )}
-
-                  {!loading && success && (
-                    <motion.span
-                      key="success"
-                      className="flex items-center gap-2"
-                    >
-                      <CheckCircle size={16} />
-                      Success
-                    </motion.span>
-                  )}
-
-                  {!loading && !success && (
-                    <motion.span key="idle">Sign In</motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-            </div>
+              {showEye ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
-        </>
+
+          {/* Button */}
+          <motion.button
+            onClick={submitDetails}
+            disabled={loading}
+            whileHover={!loading ? { scale: 1.03 } : {}}
+            whileTap={!loading ? { scale: 0.97 } : {}}
+            className="w-full py-3 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-violet-600 flex items-center justify-center gap-2 disabled:opacity-70"
+          >
+            <AnimatePresence mode="wait">
+              {loading && (
+                <motion.span key="loading" className="flex items-center gap-2">
+                  <Loader2 className="animate-spin" size={16} />
+                  Signing in
+                </motion.span>
+              )}
+
+              {!loading && success && (
+                <motion.span key="success" className="flex items-center gap-2">
+                  <CheckCircle size={16} />
+                  Success
+                </motion.span>
+              )}
+
+              {!loading && !success && (
+                <motion.span key="idle">Sign In</motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
+
+          {/* Forgot Password */}
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => navigate("/forgot-password")}
+              className="text-sm text-indigo-300 hover:text-white transition"
+            >
+              Forgot Password?
+            </button>
+          </div>
+        </motion.div>
       )}
     </div>
   );
